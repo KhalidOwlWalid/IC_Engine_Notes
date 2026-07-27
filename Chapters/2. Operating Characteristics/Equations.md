@@ -243,8 +243,84 @@ where:
 - fmep = friction mean effective pressure
 - $\eta_{m}$ = mechanical efficiency of the engine
 
-### Torque and Power
+### Torque
+$$
+2 \pi \tau = W_b = \frac{(bmep)\cdot V_d}{n}
+$$
+where:
+- $W_b$ = brake work of one revolution
+- $V_d$ = displacement volume
+- n = number of revolutions per cycle (e.g. n = 4, four-stroke cycle)
+- $\tau$ = torque measured off the output of the crankshaft
 
+### Power
+$$
+\dot{W} = \frac{WN}{n}
 $$
 $$
+\dot{W} = 2 \pi N \tau
+$$
+$$
+\dot{W} = (1/2\pi)(mep)A_p \bar{U_p}
+$$
+$$
+\dot{W} = \frac{(mep)A_p \bar{U_p}}{n}
+$$
+where:
+- $\dot{W}$ = power
+- W = work per cycle
+- n = number of revolutions per cycle (e.g. n = 2, two-stroke cycle)
+- N = engine speed
+- mep = mean effective pressure
+- $A_p$ = piston face area of all pistons
+- $\bar{U_p}$ = piston average speed
+- $\tau$ = torque
 
+Depending upon which definition of work or mep is used as defined above, power can be defined as brake power, net indicated power etc.
+
+$$
+\dot{W_b} = \eta_{m} \dot{W_i}
+$$
+$$
+(\dot{W_i})_{net}= (\dot{W_i})_{gross} - (\dot{W_i})_{pump}
+$$
+$$
+\dot{W_b} = \dot{W_i} - \dot{W_f}
+$$
+where:
+- $\eta_m$ = mechanical efficiency of the engine
+- For each prefix:
+	- b = brake
+	- i = indicated
+	- f = friction
+
+$$
+1 \space hp = 0.7457 \space kW
+$$
+$$
+1 \space kW = 1.341 \space hp
+$$
+where:
+- hp = horsepower
+
+$$
+SP = \frac{W_b}{A_p}
+$$
+$$
+OPD = \frac{W_b}{V_d}
+$$
+$$
+SV = \frac{V_d}{W_b}
+$$
+$$
+SW = \frac{m_{engine}}{W_b}
+$$
+where:
+- $W_b$ = brake power
+- $A_p$ = piston face area of all pistons
+- $V_d$ = displacement volume
+- $m_{engine}$ = mass of the engine
+- SP = specific power
+- OPD = output per displacement
+- SV = specific volume
+- SW = specific weight
