@@ -243,7 +243,7 @@ where:
 - fmep = friction mean effective pressure
 - $\eta_{m}$ = mechanical efficiency of the engine
 
-### Torque
+### C. Torque
 $$
 2 \pi \tau = W_b = \frac{(bmep)\cdot V_d}{n}
 $$
@@ -253,7 +253,7 @@ where:
 - n = number of revolutions per cycle (e.g. n = 4, four-stroke cycle)
 - $\tau$ = torque measured off the output of the crankshaft
 
-### Power
+### D. Power
 $$
 \dot{W} = \frac{WN}{n}
 $$
@@ -324,3 +324,53 @@ where:
 - OPD = output per displacement
 - SV = specific volume
 - SW = specific weight
+
+### E. Air-Fuel ratio and Fuel-Air Ratio
+$$
+AF = \frac{m_a}{m_f} = \frac{\dot{m_a}}{\dot{m_f}}
+$$
+$$
+FA = \frac{m_f}{m_a} = \frac{\dot{m_f}}{\dot{m_a}} = \frac{1}{AF}
+$$
+where:
+- $m_a$ = mass of air
+- $\dot{m_a}$ = mass flow rate of air
+- $m_f$ = mass of fuel
+- $m_f$ = mass flow rate of fuel
+- AF = Air-Fuel ratio
+- FA = Fuel-Air ratio
+
+> [!Note] 
+> Ideal or stiochiometric AF for many gasoline-type hydrocarbon fuel is very close to *15:1*
+
+$$
+\phi = \frac{(FA)_{act}}{(FA)_{stoich}} = \frac{(AF)_{stoich}}{(AF)_{act}}
+$$
+where:
+- $\phi$ = equivalence ratio
+- $(FA)_{act}$ = actual ratio of fuel-air
+- $(FA)_{stoich}$ = ideal/stoichiometric fuel-air ratio
+
+### Specific fuel consumption
+$$
+xsfc = \frac{\dot{m_f}}{\dot{W_x}}
+$$
+where:
+- x = b, i, f, ig, in, p
+	- b = brake
+	- i = indicated
+	- f = friction
+	- ig = indicated gross
+	- in = indicated net
+	- p = pumping
+- $\dot{m_f}$ = rate of fuel flow into the engine
+- W = engine power
+
+$$
+\eta_{m} = \frac{\dot{W_b}}{\dot{W_i}} = \frac{\dot{m_f}}{\dot{W_i}} \cdot \frac{\dot{W_b}}{\dot{m_f}} = \frac{isfc}{bsfc}
+$$
+where:
+- $\eta_m$ = mechanical efficient of the engine
+
+> [!Note] 
+> Brake fuel consumption decreases as engine speed increases, reaches a minimum and then increase at high speeds
