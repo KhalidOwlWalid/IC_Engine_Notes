@@ -374,3 +374,85 @@ where:
 
 > [!Note] 
 > Brake fuel consumption decreases as engine speed increases, reaches a minimum and then increase at high speeds
+
+## Engine Efficiencies
+
+- Heat added for one engine cycle in one cylinder is
+$$
+Q_{in} = m_fQ_{HV}\eta_{c}
+$$
+For steady state:
+$$
+\dot{Q_{in}} = \dot{m_f}Q_{HV}\eta_{c}
+$$
+and thermal efficiency is given by:
+$$
+\eta_{t} = \frac{W}{Q_{in}} = \frac{\dot{W}}{\dot{Q_{in}}} = \frac{\eta_{f}}{\eta_{c}}
+$$
+where:
+- W = work of one cycle
+- $\dot{W}$ = power
+- $m_f$ = mass of fuel for one cycle
+- $\dot{m_f}$ = mass flow rate of fuel
+- $Q_{HV}$ = heating value of fuel
+- $\eta_{f}$ = fuel conversion efficiency
+- $\eta_{t}$ = thermal efficiency
+- $\eta_{c}$ = combustion efficiency, account for the fraction of fuel which burns since there will be some that does not react and exits with the exhaust flow
+
+$$
+\eta_{m} = \frac{(\eta_t)_b}{(\eta_t)_i}
+$$
+where:
+- $\eta_m$ = engine mechanical efficiency
+- b = brake
+- i = indicated
+
+$$
+\eta_f = \frac{W}{m_fQ_{HV}} = \frac{\dot{W}}{\dot{m}Q_{HV}}
+$$
+$$
+\eta_f = \frac{1}{(sfc)Q_{HV}}
+$$
+where:
+- $\eta_f$ = fuel conversion efficiency
+- sfc = specific fuel consumption
+
+For a single cycle of **one cylinder**, the thermal efficiency can be written as:
+$$
+\eta_{t} = \frac{W}{m_fQ_{HV}\eta_c}
+$$
+
+> [!Note] 
+> This is thermal efficiency introduced in basic thermodynamics, sometimes called **enthalpy efficiency**
+
+## Volumetric Efficiency
+$$
+\eta_{v} = \frac{m_a}{\rho_{a}V_d}
+$$
+$$
+\eta_{v} = \frac{n\dot{m_a}}{\rho_aV_dN}
+$$
+where:
+- $m_a$ = mass of air into the engine (or cylinder)  for one cycle
+- $m_a$ = steadt-state flow of air into the engine
+- $\rho_a$ = air density evaluated at atmospheric conditions outside the engine
+- $V_d$ = displacement volume
+- N = engine speed
+- n = number of revolutions per cycle
+
+Unless better values are known, standard values of air pressure and temperature can be used to determine density, given by:
+$$
+\rho_a = \frac{P_o}{RT_o}
+$$
+where:
+- $P_o$ = pressure of surrounding air (at standard atm condition, we use 101 kPa)
+- $T_o$ = temperature of surrounding air (assume 298K, 25C)
+- R = gas constant of air, $0.287kJ/kgK$
+
+Although, one can assume that the density of of air @ standard condition is 1.18kg/m3
+
+
+> [!Note] 
+> Typical value of volumetric efficiency, $\eta_v$ @ wide open throttle is between 75% and 90%
+
+
