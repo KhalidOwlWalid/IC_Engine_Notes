@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from engine_lib.burn_fraction import BurnFraction, WiebeParams
+from engine_lib.finite_heat_release import FiniteHeatRelease, WiebeParams
 
 """
 Example 2.2
@@ -34,8 +34,8 @@ def main():
         a=5, n=3, theta_s=np.deg2rad(-20), theta_d=np.deg2rad(40), q_in=1764
     )
 
-    engine1 = BurnFraction(engine1_wb_params)
-    engine2 = BurnFraction(engine2_wb_params)
+    engine1 = FiniteHeatRelease(engine1_wb_params)
+    engine2 = FiniteHeatRelease(engine2_wb_params)
     engine1_P, engine1_burn_rate, engine1_temp = engine1.simulate(10, theta, 8.73e-4, 1.4)
     engine2_P, engine2_burn_rate, engine2_temp = engine2.simulate(10, theta, 8.73e-4, 1.4)
 

@@ -34,3 +34,16 @@ class EngineGeometry:
     @property
     def V_c(self):
         return self.V_d / (self.r - 1)
+
+    # Normalized cylinder volume at a given crank angle
+    # Note that in Engineering Fundamentals of the Internal Combustion Engine by Willard W. Pulkrabek, he used a different formula
+    # See equation 2-13 and 2-14
+    # Note: The equation taken from 2.38 from the textbook is wrong it should have been 1/r + ... instead of 1 + ...
+    @staticmethod
+    def V_tilda(r, theta):
+        return 1/r + ((r - 1)/(2 * r)) * (1 - np.cos(theta))
+
+    # Normalized dv_dtheta at a given crank angle
+    @staticmethod
+    def dVtilda_dtheta(r: float, theta: float | np.ndarray) -> float | np.ndarray:
+        return (r - 1) * np.sin(theta) / (2 * r)

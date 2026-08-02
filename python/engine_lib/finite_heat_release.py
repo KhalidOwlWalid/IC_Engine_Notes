@@ -12,7 +12,7 @@ class WiebeParams:
     q_in: float
 
 @dataclass
-class BurnFractionResults:
+class FiniteHeatReleaseResults:
     theta: np.ndarray
     xb: np.ndarray
     dxb_dtheta: np.ndarray
@@ -22,7 +22,15 @@ class BurnFractionResults:
     dptilda_dtheta: np.ndarray
     dp_dtheta: np.ndarray
 
-class BurnFraction:
+class FiniteHeatRelease:
+
+    """
+    The implementation of the finite heat release is based on the book:
+    
+    Internal Combustion Engines: Applied Thermosciences by Colin R. Ferguson/Allan T. Kirkpatrick
+
+    Taken from page p.42 to p.47
+    """
 
     def __init__(self, wiebe_params: WiebeParams):
         self.a = wiebe_params.a
@@ -39,41 +47,11 @@ class BurnFraction:
     def xb(self, theta):
         return self.wiebe_fcn(theta)
 
+    # Equation 2.26, can also be re-written as Equation 2.25
     def dxb_dtheta(self, theta: float | np.ndarray) -> float | np.ndarray:
         X = (theta - self.theta_s) / self.theta_d
         dx_dtheta = (self.a * self.n / self.theta_d) * np.power(X, self.n - 1) * np.exp(-self.a * np.power(X, self.n))
         return dx_dtheta
-
-    def V(self, V_bdc: float, r: float, theta: float | np.ndarray) -> float | np.ndarray:
-        return BurnFraction.V_tilda(r, theta) * V_bdc
-
-    def dV_dtheta(self, V_bdc: float, r: float, theta: float | np.ndarray) -> float | np.ndarray:
-        return BurnFraction.dVtilda_dtheta(r, theta) * V_bdc
-
-    # Normalized cylinder volume at a given crank angle
-    # Note that in Engineering Fundamentals of the Internal Combustion Engine by Willard W. Pulkrabek, he used a different formula
-    # See equation 2-13 and 2-14
-    # Note: The equation taken from 2.38 from the textbook is wrong it should have been 1/r + ... instead of 1 + ...
-    @staticmethod
-    def V_tilda(r, theta):
-        return 1/r + ((r - 1)/(2 * r)) * (1 - np.cos(theta))
-
-    # Normalized dv_dtheta at a given crank angle
-    @staticmethod
-    def dVtilda_dtheta(r: float, theta: float | np.ndarray) -> float | np.ndarray:
-        return (r - 1) * np.sin(theta) / (2 * r)
-
-    def dPtilda_dtheta(self, theta: float | np.ndarray, gamma: float, Ptilda: float | np.ndarray, Vtilda: float | np.ndarray) -> float | np.ndarray:
-
-        for i in range(len(theta)):
-            Q_in = 0
-            # If it is not during the combustion process, then there is no heat added into the system
-            # At this point, dQ/dtheta = 0
-            if (theta[i] < self.theta_s or theta[i] > (self.theta_s + self.theta_d)):
-                Q_in = 0
-            else:
-                Q_in = self.q_in
-
 
     def simulate(self, r, theta, V_bdc, gamma):
 
@@ -95,10 +73,10 @@ class BurnFraction:
             burn_rate.append(dx_dtheta)
 
             # Calculate the cylinder volume
-            Vtilda = BurnFraction.V_tilda(r, theta[i])
+            Vtilda = EngineGeometry.V_tilda(r, theta[i])
             V = Vtilda * V_bdc
 
-            dVtilda_dtheta = BurnFraction.dVtilda_dtheta(r, theta[i])
+            dVtilda_dtheta = EngineGeometry.dVtilda_dtheta(r, theta[i])
             dV_dtheta = dVtilda_dtheta * V_bdc
 
             if (theta[i] < self.theta_s or theta[i] > (self.theta_s + self.theta_d)):
