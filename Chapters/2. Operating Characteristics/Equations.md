@@ -243,6 +243,19 @@ where:
 - fmep = friction mean effective pressure
 - $\eta_{m}$ = mechanical efficiency of the engine
 
+$$
+imep = \eta \frac{Q_{in}}{V_1}\frac{r}{r-1}
+$$
+where:
+- imep = indicated mean effective pressure
+- $Q_{in}$ = Heat added into the system, through the process of combustion
+
+It also shares can be non-dimensionalized by the initial pressure, $P_1$:
+$$
+\frac{imep}{P_1} = \eta \frac{Q_{in}}{P_1V_1}\frac{r}{r-1}
+$$
+
+
 ### C. Torque
 $$
 2 \pi \tau = W_b = \frac{(bmep)\cdot V_d}{n}
