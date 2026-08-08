@@ -36,8 +36,8 @@ def main():
 
     engine1 = FiniteHeatRelease(engine1_wb_params)
     engine2 = FiniteHeatRelease(engine2_wb_params)
-    engine1_P, engine1_burn_rate, engine1_temp = engine1.solve_dptilda_dtheta(10, theta, 8.73e-4, 1.4)
-    engine2_P, engine2_burn_rate, engine2_temp = engine2.solve_dptilda_dtheta(10, theta, 8.73e-4, 1.4)
+    engine1_P, engine1_burn_rate, engine1_temp = engine1.solve_dptilda_dtheta(10, theta, 8.73e-4, 1.4, 100e3)
+    engine2_P, engine2_burn_rate, engine2_temp = engine2.solve_dptilda_dtheta(10, theta, 8.73e-4, 1.4, 100e3)
 
     plt.plot(theta_deg, engine1_temp, label="Engine 1")
     plt.plot(theta_deg, engine2_temp, label="Engine 2")

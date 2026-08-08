@@ -31,7 +31,7 @@ class FiniteHeatReleaseResults:
 
     # Work [J]
     dqtilda_dtheta: np.ndarray
-    q: np.ddarray
+    q: np.ndarray
 
 class FiniteHeatRelease:
 
@@ -66,7 +66,7 @@ class FiniteHeatRelease:
 
     # TODO: Refactor this, this is a lot of just hardcoded implementation
     # TODO: Provide an option to solve with ODE solver (e.g. RK45) instead of forward-euler
-    def solve_dptilda_dtheta(self, r: float | np.ndarray, theta: float | np.ndarry, V_bdc: float, gamma: float, P_0: float) -> FiniteHeatReleaseResults:
+    def solve_dptilda_dtheta(self, r: float | np.ndarray, theta: float | np.ndarray, V_bdc: float, gamma: float, P_0: float) -> FiniteHeatReleaseResults:
         """
         Solve the dP/dtheta problem using forward-euler, to yield higher accuracy, consider using RK45 (Runge Kutta method).
 
