@@ -14,13 +14,24 @@ class WiebeParams:
 @dataclass
 class FiniteHeatReleaseResults:
     theta: np.ndarray
+    
+    # Energy release results
     xb: np.ndarray
-    dxb_dtheta: np.ndarray
+    dxb_dtheta: np.ndarray # [J/deg]
+
+    # Cylinder volume [m3]
     dvtilda_dtheta: np.ndarray
     dv_dtheta: np.ndarray
+    v: np.ndarray
     
+    # Pressure [Pa]
     dptilda_dtheta: np.ndarray
     dp_dtheta: np.ndarray
+    p: np.ndarray
+
+    # Work [J]
+    dqtilda_dtheta: np.ndarray
+    q: np.ddarray
 
 class FiniteHeatRelease:
 
@@ -53,7 +64,16 @@ class FiniteHeatRelease:
         dx_dtheta = (self.a * self.n / self.theta_d) * np.power(X, self.n - 1) * np.exp(-self.a * np.power(X, self.n))
         return dx_dtheta
 
-    def simulate(self, r, theta, V_bdc, gamma):
+    # TODO: Refactor this, this is a lot of just hardcoded implementation
+    # TODO: Provide an option to solve with ODE solver (e.g. RK45) instead of forward-euler
+    def solve_dptilda_dtheta(self, r: float | np.ndarray, theta: float | np.ndarry, V_bdc: float, gamma: float, P_0: float) -> FiniteHeatReleaseResults:
+        """
+        Solve the dP/dtheta problem using forward-euler, to yield higher accuracy, consider using RK45 (Runge Kutta method).
+
+        Initial pressure, P_0 required to solve the equation as P in itself is a state with memory
+        """
+
+        results = FiniteHeatReleaseResults
 
         P_results = []
         burn_rate = []
@@ -93,3 +113,6 @@ class FiniteHeatRelease:
                 P_results.append(P / 1000) # Converted into kPa
 
         return P_results, burn_rate, T_results
+
+class FiniteHeatReleaseWithLoss:
+    pass
