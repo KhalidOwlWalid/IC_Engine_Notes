@@ -22,7 +22,7 @@ class EngineGeometry:
 
     @classmethod
     def from_bore_stroke(cls, stroke: float, bore: float, compression_ratio: float, N_c: float):
-        V_d = N_c * (np.pi / 4) * np.power(bore, 2) * compression_ratio 
+        V_d = N_c * (np.pi / 4) * np.power(bore, 2) * stroke 
         V_tdc = V_d / (compression_ratio - 1)
         V_bdc = (V_d + V_tdc)
         return cls(conrod_length=None, stroke=stroke, bore=bore, compression_ratio=compression_ratio, N_c=N_c, V_tdc=V_tdc, V_bdc=V_bdc)

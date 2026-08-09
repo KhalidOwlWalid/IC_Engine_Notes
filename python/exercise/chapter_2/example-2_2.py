@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from engine_lib.finite_heat_release import FiniteHeatRelease, WiebeParams
+from engine_lib.engine_kinematics import EngineGeometry
 
 """
 Example 2.2
@@ -23,30 +24,32 @@ and imep of the engine.
 """
 def main():
 
-    theta = np.linspace(-np.pi, np.pi, 100)
+    theta = np.linspace(-np.pi, np.pi, 200)
     theta_deg = theta * 180 / np.pi
 
-    engine1_wb_params = WiebeParams(
-        a=5, n=3, theta_s=np.deg2rad(0), theta_d=np.deg2rad(40), q_in=1764
-    )
+    engine_geometry = EngineGeometry.from_bore_stroke(bore=100e-3, stroke=100e-3, compression_ratio=10, N_c=1)
+    engine2_geometry = EngineGeometry.from_bore_stroke(bore=100e-3, stroke=100e-3, compression_ratio=10, N_c=1)
 
-    engine2_wb_params = WiebeParams(
+    engine1_wb_params = WiebeParams(
         a=5, n=3, theta_s=np.deg2rad(-20), theta_d=np.deg2rad(40), q_in=1764
     )
 
-    engine1 = FiniteHeatRelease(engine1_wb_params)
-    engine2 = FiniteHeatRelease(engine2_wb_params)
-    engine1_P, engine1_burn_rate, engine1_temp = engine1.solve_dptilda_dtheta(10, theta, 8.73e-4, 1.4, 100e3)
-    engine2_P, engine2_burn_rate, engine2_temp = engine2.solve_dptilda_dtheta(10, theta, 8.73e-4, 1.4, 100e3)
+    engine2_wb_params = WiebeParams(
+        a=5, n=3, theta_s=np.deg2rad(0), theta_d=np.deg2rad(40), q_in=1764
+    )
 
-    plt.plot(theta_deg, engine1_temp, label="Engine 1")
-    plt.plot(theta_deg, engine2_temp, label="Engine 2")
-    # plt.plot(theta_deg, engine1_P, label="Engine 1")
-    # plt.plot(theta_deg, engine2_P, label="Engine 2")
-    plt.title("Different crank angle start comparison")
-    plt.ylabel("Pressure (kPa)")
-    plt.xlabel("Theta (degree)")
-    plt.grid()
+    engine1 = FiniteHeatRelease(engine_geometry, engine1_wb_params)
+    engine2 = FiniteHeatRelease(engine2_geometry, engine2_wb_params)
+
+    engine1_sol = engine1.solve_pressure_ivp(theta=theta, gamma=1.4, iv_P=100e3)
+    # engine1_sol_fe = engine1.solve(r=10, theta=theta, V_bdc=8.73e-4, gamma=1.4, P_0=100e3)
+    engine2_sol = engine2.solve_pressure_ivp(theta=theta, gamma=1.4, iv_P=100e3)
+
+    theta_deg = theta * 180/np.pi
+
+    plt.plot(theta_deg, engine1_sol.y[0], label="Engine 1 (RK45)")
+    # plt.plot(theta_deg, engine1_sol_fe.p, label="Engine 1 (Forwar-Euler)")
+    plt.plot(theta_deg, engine2_sol.y[0], label="Engine 2 (RK45)")
     plt.legend()
     plt.show()
 

@@ -50,8 +50,8 @@ class FiniteHeatRelease:
     """
 
     def __init__(self, eng_geometry: EngineGeometry, wiebe_params: WiebeParams):
-        self._wb_parm = wiebe_params
         self._eng_geom = eng_geometry
+        self._wb_parm = wiebe_params
 
     def wiebe_fcn(self, theta):
         return 1 - np.exp(-self._wb_parm.a * np.pow((theta - self._wb_parm.theta_s)/self._wb_parm.theta_d, self._wb_parm.n))
@@ -70,10 +70,10 @@ class FiniteHeatRelease:
         P = y[0]
 
         # Calculate the cylinder volume
-        Vtilda = EngineGeometry.V_tilda(self._eng_geom.r, theta)
+        Vtilda = self._eng_geom.V_tilda(theta)
         V = Vtilda * self._eng_geom.V_bdc
 
-        dVtilda_dtheta = EngineGeometry.dVtilda_dtheta(self._eng_geom.r, theta)
+        dVtilda_dtheta = self._eng_geom.dVtilda_dtheta(theta)
         dV_dtheta = dVtilda_dtheta * self._eng_geom.V_bdc
 
         if (theta < self._wb_parm.theta_s or theta > (self._wb_parm.theta_s + self._wb_parm.theta_d)):
@@ -135,18 +135,18 @@ class FiniteHeatRelease:
             results.dxb_dtheta.append(dx_dtheta)
 
             # Calculate the cylinder volume
-            Vtilda = EngineGeometry.V_tilda(r, theta[i])
+            Vtilda = EngineGeometry.V_tilda_static(r, theta[i])
             V = Vtilda * V_bdc
             results.v.append(V)
 
-            dVtilda_dtheta = EngineGeometry.dVtilda_dtheta(r, theta[i])
+            dVtilda_dtheta = EngineGeometry.dVtilda_dtheta_static(r, theta[i])
             dV_dtheta = dVtilda_dtheta * V_bdc
             results.dv_dtheta.append(dV_dtheta)
 
-            if (theta[i] < self.theta_s or theta[i] > (self.theta_s + self.theta_d)):
+            if (theta[i] < self._wb_parm.theta_s or theta[i] > (self._wb_parm.theta_s + self._wb_parm.theta_d)):
                 Q_in = 0
             else:
-                Q_in = self.q_in
+                Q_in = self._wb_parm.q_in
             results.q.append(Q_in)
 
             dP_dtheta = -gamma * (P / V) * dV_dtheta + (gamma - 1) * (Q_in / V) * dx_dtheta
