@@ -1,8 +1,13 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from engine_lib.finite_heat_release import FiniteHeatRelease, WiebeParams
 from engine_lib.engine_kinematics import EngineGeometry
+from engine_lib.finite_heat_release import (
+    AirProperties,
+    FiniteHeatRelease,
+    FiniteHeatReleaseIV,
+    WiebeParams,
+)
 
 """
 Example 2.2
@@ -25,10 +30,10 @@ and imep of the engine.
 def main():
 
     theta = np.linspace(-np.pi, np.pi, 200)
-    theta_deg = theta * 180 / np.pi
 
+    fhr_iv = FiniteHeatReleaseIV(P_0=100e3, T_0=300)
+    air_properties = AirProperties(gamma=1.4)
     engine_geometry = EngineGeometry.from_bore_stroke(bore=100e-3, stroke=100e-3, compression_ratio=10, N_c=1)
-    engine2_geometry = EngineGeometry.from_bore_stroke(bore=100e-3, stroke=100e-3, compression_ratio=10, N_c=1)
 
     engine1_wb_params = WiebeParams(
         a=5, n=3, theta_s=np.deg2rad(-20), theta_d=np.deg2rad(40), q_in=1764
@@ -38,18 +43,39 @@ def main():
         a=5, n=3, theta_s=np.deg2rad(0), theta_d=np.deg2rad(40), q_in=1764
     )
 
-    engine1 = FiniteHeatRelease(engine_geometry, engine1_wb_params)
-    engine2 = FiniteHeatRelease(engine2_geometry, engine2_wb_params)
+    engine1 = FiniteHeatRelease(engine_geometry, engine1_wb_params, air_properties, fhr_iv)
+    engine2 = FiniteHeatRelease(engine_geometry, engine2_wb_params, air_properties, fhr_iv)
 
-    engine1_sol = engine1.solve_pressure_ivp(theta=theta, gamma=1.4, iv_P=100e3)
-    # engine1_sol_fe = engine1.solve(r=10, theta=theta, V_bdc=8.73e-4, gamma=1.4, P_0=100e3)
-    engine2_sol = engine2.solve_pressure_ivp(theta=theta, gamma=1.4, iv_P=100e3)
+    engine1.full_solve(theta)
+    engine2.full_solve(theta)
 
-    theta_deg = theta * 180/np.pi
+    # Question (b)
+    plt.plot(np.rad2deg(engine1._results.theta), engine1._results.W_net, label="Engine 1 imep")
+    plt.plot(np.rad2deg(engine2._results.theta), engine2._results.W_net, label="Engine 2 imep")
+    plt.legend()
+    plt.show()
 
-    plt.plot(theta_deg, engine1_sol.y[0], label="Engine 1 (RK45)")
-    # plt.plot(theta_deg, engine1_sol_fe.p, label="Engine 1 (Forwar-Euler)")
-    plt.plot(theta_deg, engine2_sol.y[0], label="Engine 2 (RK45)")
+    # Question (c)
+    theta_s_array = np.linspace(-50, 20, 70)
+    imep_result: np.ndarray = np.empty(len(theta_s_array))
+    eta_t_result: np.ndarray = np.empty(len(theta_s_array))
+
+    for i, theta_s in enumerate(theta_s_array):
+        engine_wb_params = WiebeParams(
+            a=5, n=3, theta_s=np.deg2rad(theta_s), theta_d=np.deg2rad(40), q_in=1764
+        )
+        engine = FiniteHeatRelease(engine_geometry, engine_wb_params, air_properties, fhr_iv)
+        engine.full_solve(theta)
+        imep_result[i] = engine._results.imep
+        eta_t_result[i] = engine._results.eta_t
+
+    fig, (ax1, ax2) = plt.subplots(2, 1)
+    ax1.plot(theta_s_array, imep_result, label="imep")
+    ax1.set_xlabel("theta_s")
+    ax1.set_ylabel("imep")
+    ax2.plot(theta_s_array, eta_t_result, label="eta_t")
+    ax2.set_xlabel("theta_s")
+    ax2.set_ylabel("eta_t")
     plt.legend()
     plt.show()
 
