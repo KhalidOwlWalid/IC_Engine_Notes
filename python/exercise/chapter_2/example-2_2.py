@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+from dataclasses import asdict
+
 from engine_lib.engine_kinematics import EngineGeometry
 from engine_lib.finite_heat_release import (
     AirProperties,
@@ -29,30 +31,64 @@ and imep of the engine.
 """
 def main():
 
-    theta = np.linspace(-np.pi, np.pi, 200)
+    theta = np.linspace(-np.pi, np.pi, 1000)
 
     fhr_iv = FiniteHeatReleaseIV(P_0=100e3, T_0=300)
     air_properties = AirProperties(gamma=1.4)
-    engine_geometry = EngineGeometry.from_bore_stroke(bore=100e-3, stroke=100e-3, compression_ratio=10, N_c=1)
+    engine_geometry = EngineGeometry.from_bore_stroke(bore=100e-3, stroke=100e-3, compression_ratio=10, N_c=1) 
 
-    engine1_wb_params = WiebeParams(
-        a=5, n=3, theta_s=np.deg2rad(-20), theta_d=np.deg2rad(40), q_in=1764
-    )
+    theta_s = [
+        -40,
+        -20,
+        0,
+        10,
+        20
+    ]
+    num_eng = len(theta_s)
 
-    engine2_wb_params = WiebeParams(
-        a=5, n=3, theta_s=np.deg2rad(0), theta_d=np.deg2rad(40), q_in=1764
-    )
+    fig, (P_ax, T_ax) = plt.subplots(2, 1)
 
-    engine1 = FiniteHeatRelease(engine_geometry, engine1_wb_params, air_properties, fhr_iv)
-    engine2 = FiniteHeatRelease(engine_geometry, engine2_wb_params, air_properties, fhr_iv)
-
-    engine1.full_solve(theta)
-    engine2.full_solve(theta)
+    engine_results: dict = {}
 
     # Question (b)
-    plt.plot(np.rad2deg(engine1._results.theta), engine1._results.W_net, label="Engine 1 imep")
-    plt.plot(np.rad2deg(engine2._results.theta), engine2._results.W_net, label="Engine 2 imep")
+    for i in range(num_eng):
+        engine_wb_params = WiebeParams(
+            a=5, n=3, theta_s=np.deg2rad(theta_s[i]), theta_d=np.deg2rad(40), q_in=1764
+        )
+        engine = FiniteHeatRelease(engine_geometry, engine_wb_params, air_properties, fhr_iv)
+        engine.full_solve(theta)
+        engine_results[i] = engine
+
+        label = f"Engine {i} with theta_s={np.rad2deg(engine._wb_parm.theta_s)} deg"
+        engine.plot_data_with_theta(P_ax, "W_net", label)
+        engine.plot_data_with_theta(T_ax, "dWtilda_dtheta", label)
+
+    P_ax.set_ylabel("dQtilda_dtheta")
+    P_ax.set_xlabel("Theta (deg)")
+    P_ax.set_title("Comparison of different theta_s configuration")
+
+    T_ax.set_ylabel("Temperature (K)")
+    T_ax.set_xlabel("Theta (deg)")
+
+    axes = [P_ax, T_ax]
+
+    for i, ax in enumerate(axes):
+        ax.grid()
+        ax.legend()
+
+    plt.show()
+
+    # My own analysis
+    fig, ax = plt.subplots(1, 1)
+    for key in engine_results.keys():
+        engine = engine_results[key]
+        label = f"Engine {key} with theta_s={np.rad2deg(engine._wb_parm.theta_s)} deg"
+        engine.plot_data_with_theta(ax, "W_net", label)
+
+    ax.set_xlabel("Theta (deg)")
+    ax.set_ylabel("W_net (J)")
     plt.legend()
+    plt.grid()
     plt.show()
 
     # Question (c)
@@ -73,10 +109,16 @@ def main():
     ax1.plot(theta_s_array, imep_result, label="imep")
     ax1.set_xlabel("theta_s")
     ax1.set_ylabel("imep")
+    ax1.grid()
+    ax1.legend()
+    ax1.set_title("Comparison of the effect of θs to engine's efficiency")
+
     ax2.plot(theta_s_array, eta_t_result, label="eta_t")
     ax2.set_xlabel("theta_s")
     ax2.set_ylabel("eta_t")
-    plt.legend()
+    ax2.legend()
+    ax2.grid()
+
     plt.show()
 
 if __name__ == "__main__":

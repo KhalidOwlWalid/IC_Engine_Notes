@@ -48,3 +48,31 @@ where:
 - k = $c_p/c_v$
 - w = specific work
 - c = speed of sound
+
+## Gas cycle computation
+$$
+Q_{in} = m_f \cdot q_{c} = m\cdot q_{in}
+$$
+where:
+- $Q_{in}$ =  head addition (kJ)
+- $m_f$ = mass of fuel injected into the cylinder (kg)
+- m = mass of the fuel-air gas mixture (kJ/ $kg_{fuel}$ )
+- $q_c$ = heat of combustion (kJ/ $kg_{fuel}$ )
+- $q_{in}$ = heat addition per unit mass of fuel air mixutre ( $kJ/kg_{mix}$)
+
+## Otto Cycles
+#### Compression Stroke
+$$
+\frac{P_2}{P_1} = r^{\gamma} \qquad \frac{T_2}{T_1} = r^{\gamma - 1}
+$$
+#### Constant Volume Heat Addition
+$$
+Q_{in} = mc_v(T_3 - T_2)
+$$
+$$
+\frac{T_3}{T_2} = (\gamma - 1) \frac{Q_{in}}{P_1 V_1} r^{\gamma - 1} + 1
+$$
+$$
+\frac{P_3}{P_2} = \frac{T_3}{T_2}
+$$
+#### Expansion Stroke
